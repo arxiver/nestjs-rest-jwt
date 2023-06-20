@@ -59,8 +59,6 @@ describe('UserController', () => {
       const createUserDto: CreateUserDto = {
         name: 'Jane Doe',
         email: 'janedoe@example.com',
-        latitude: 37.7749,
-        longitude: -122.4194,
         password: 'password00',
       };
 
@@ -69,27 +67,10 @@ describe('UserController', () => {
       expect(result.message).toEqual('Signup successful');
     });
 
-    it('should throw that user is outside USA', async () => {
-      const createUserDto: CreateUserDto = {
-        name: 'Jane Carloine',
-        email: 'janeCaro@gmail.com',
-        latitude: 10.7749,
-        longitude: 90.4194,
-        password: 'password00',
-      };
-      try {
-        await controller.create(createUserDto);
-      } catch (error) {
-        expect(error).toEqual(new HttpException('Your country is not supported, USA only', 400));
-      }
-    }, 10000);
-
     it('should throw an error if the email is already in use', async () => {
       const createUserDto: CreateUserDto = {
         name: 'John Smith',
         email: 'johndoe@example.com',
-        latitude: 37.7749,
-        longitude: -122.4194,
         password: 'password00',
       };
       try {
@@ -103,8 +84,6 @@ describe('UserController', () => {
       const createUserDto: CreateUserDto = {
         name: 'John Smith',
         email: '',
-        latitude: 37.7749,
-        longitude: -122.4194,
         password: 'password00',
       };
       try {

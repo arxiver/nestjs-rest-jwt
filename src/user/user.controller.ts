@@ -14,24 +14,17 @@ export class UserController {
   * 
   * @param string $name The name of the user
   * @param string $email The email of the user
-  * @param number $latitude The latitude of the user
-  * @param number $longitude The longitude of the user
   * @param string $password The password of the user
   
   *
   * @throws HTTPErrors\BadRequestException if 
-  * - the email is already in use
-  * - the latitude is not a number
-  * - the longitude is not a number
-  * - the password is not at least 8 characters
-  * - the password is not at most 30 characters
   * - the name is not at least 3 characters
   * - the name is not at most 30 characters
+  * - the email is already in use
   * - the email is not at most 60 characters
   * - the email is not a valid email
-  * - the latitude is not a valid latitude
-  * - the longitude is not a valid longitude
-  * - the latitude and longitude are not in the United States
+  * - the password is not at least 8 characters
+  * - the password is not at most 30 characters
   *
   * @return access_token The access token for the user
   */

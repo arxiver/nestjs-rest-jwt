@@ -19,8 +19,6 @@ export class UserService {
   * 
   * @param string $name The name of the user
   * @param string $email The email of the user
-  * @param number $latitude The latitude of the user
-  * @param number $longitude The longitude of the user
   * @param string $password The password of the user
   *
   * @return User The user
@@ -32,14 +30,6 @@ export class UserService {
 
     // Hash the password
     user.password = await hashPassword(user.password);
-
-    // Infer the city and state from the latitude and longitude
-    const { city, state, country } = await inferCityAndState(user.latitude, user.longitude);
-    user.city = city;
-    user.state = state;
-
-    // Check if the country is the United States
-    if (country !== 'US') throw new HttpException('Your country is not supported, USA only', 400);
 
     // Save the user
     const savedUser = await this.userRepository.save(user);
