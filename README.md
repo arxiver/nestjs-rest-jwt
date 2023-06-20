@@ -76,6 +76,13 @@ The following parameters need to be in the POST body:
 $ npm install
 ```
 
+### Database Setup
+1. Make sure you are having postgresql installed on your machine & running server.
+2. Create a database named `server_db` or any name you want (config is at `config/env/dev.env`).
+3. Create a databased for testing purpose named `test_db` you can change it also from same above file.
+
+Make sure to configure all the environment variables in `config/env/dev.env` file.
+
 ## Running the app
 
 ```bash
