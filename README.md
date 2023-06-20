@@ -26,7 +26,6 @@ Task Quality Requirements:
 * @return Status
 */
 ```
-
 - All API endpoints should be documented using Swagger. You can follow the example here: https://petstore.swagger.io/
 
 - All functions should be unit tested using JestJS.
@@ -64,6 +63,13 @@ The following parameters need to be in the POST body:
 - latitude (decimal, required)
 - longitude (decimal, required)
 
+## Demo
+
+<video autoplay allowfullscreen="true" poster="assets/image.png">
+    <source src="assets/demo.webm" type="video/webm">
+</video>
+
+
 ## Installation
 
 ```bash
@@ -88,9 +94,6 @@ $ npm run start:prod
 ```bash
 # unit tests
 $ npm run test
-
-# e2e tests
-$ npm run test:e2e
 
 # test coverage
 $ npm run test:cov

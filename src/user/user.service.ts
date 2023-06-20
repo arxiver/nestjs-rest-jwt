@@ -4,9 +4,8 @@ import { LoginUserDto } from 'src/user/dto/login-user.dto';
 import { User } from './entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { hashPassword, inferCityAndState } from 'src/utils';
+import { hashPassword, inferCityAndState, comparePasswordHash } from '../utils';
 import { JwtService } from '@nestjs/jwt';
-import { comparePasswordHash } from 'src/utils';
 
 @Injectable()
 export class UserService {
@@ -28,7 +27,9 @@ export class UserService {
   * 
   */
   async create(createUserDto: CreateUserDto) {
+    // Create the user instance
     const user = this.userRepository.create(createUserDto);
+
     // Hash the password
     user.password = await hashPassword(user.password);
 
@@ -40,7 +41,11 @@ export class UserService {
     // Check if the country is the United States
     if (country !== 'US') throw new HttpException('Your country is not supported, USA only', 400);
 
-    return await this.userRepository.save(user);
+    // Save the user
+    const savedUser = await this.userRepository.save(user);
+
+    // Create access token
+    return await this._createToken(savedUser, 'Signup successful');
   }
 
   findAll() {
@@ -83,12 +88,6 @@ export class UserService {
    * 
    * */
 
-  // Red flag: this function returns the user's password hash
-  // Utility function to find a user by email and password is returned 
-  _findUserWithPassByEmail(email: string) {
-    return this.userRepository.findOne({ where: { email: email }, select: ['password'] });
-  }
-
   /** Logs in a user
    * 
    * @param string $email The email of the user
@@ -108,10 +107,7 @@ export class UserService {
     if (await comparePasswordHash(loginUser.password, user.password) === false) {
       throw new HttpException('Invalid credentials', 401);
     }
-    const payload = { sub: user.id, email: user.email };
-    return {
-      access_token: await this.jwtService.signAsync(payload),
-    };
+    return await this._createToken(user);
   }
 
   /** Validates a user by JWT
@@ -131,17 +127,21 @@ export class UserService {
     return user;
   }
 
-  /** Gets the current user from the JWT
-   *  
-   * @param string $token The JWT
-   * 
-   * @throws HTTPErrors\UnauthorizedException if the user is not found
-   * 
-   * @return User The user
-   * 
-   */
-  async getCurrentUserFromToken(token: string) {
-    const payload = await this.jwtService.verifyAsync(token);
-    return await this.findOneByProp('email', payload.email);
+
+  // Red flag: this function returns the user's password hash
+  // Utility function to find a user by email and password is returned 
+  private _findUserWithPassByEmail(email: string) {
+    return this.userRepository.findOne({ where: { email: email }, select: ['id', 'email', 'password'] });
   }
+
+  // Utility function to create a token
+  private async _createToken(user: User, message: string = 'Login successful') {
+    const payload = { sub: user.id, email: user.email };
+    return {
+      message: message,
+      id: user.id,
+      access_token: await this.jwtService.signAsync(payload),
+    };
+  }
+
 }

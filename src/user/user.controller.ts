@@ -1,8 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, NotFoundException, HttpException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, HttpException, UseGuards } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { LoginUserDto } from './dto/login-user.dto';
+import { AuthGuard } from '../auth.gaurd';
 
 @ApiTags('user')
 @Controller('user')
@@ -47,8 +48,9 @@ export class UserController {
    * const users = await getAllUsers();
    * console.log(users); // [ { id: 1, name: 'John Doe', ... }, { id: 2, name: 'Jane Doe', ... } ]
    */
-  @Get()
   @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Get()
   findAll() {
     return this.userService.findAll();
   }
@@ -59,12 +61,14 @@ export class UserController {
    * 
    * @throws HTTPErrors\NotFoundException if the user is not found
    * 
-   * @return User The user
+   * @return User The user (name, email, city, state)
+   * 
    */
   @ApiBearerAuth()
+  @UseGuards(AuthGuard)
   @Get(':id')
-  async findOne(@Param('id') id: string) {
-    const user = await this.userService.findOne(+id);
+  async findOne(@Param('id') id: number) {
+    const user = await this.userService.findOne(id);
     if (!user) throw new HttpException('User not found', 404);
     return user;
   }

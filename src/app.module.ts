@@ -1,6 +1,5 @@
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { configuration } from 'config/';
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -10,7 +9,6 @@ import { UserModule } from './user/user.module';
   imports: [
     ConfigModule.forRoot({
       envFilePath: `${process.cwd()}/config/env/${process.env.NODE_ENV}.env`,
-      load: [configuration]
     }),
     TypeOrmModule.forRootAsync({
       useFactory: async () => ({
@@ -31,3 +29,16 @@ import { UserModule } from './user/user.module';
   providers: [AppService],
 })
 export class AppModule { }
+
+
+/*
+ * @Author: Mohamed Mokhtar
+ * @Date: 2023-06-20
+ * @Website: https://rrrokhtar.me
+ *                      _    _     _             
+ *  _ __ _ __ _ __ ___ | | _| |__ | |_ __ _ _ __ 
+ * | '__| '__| '__/ _ \| |/ / '_ \| __/ _` | '__|
+ * | |  | |  | | | (_) |   <| | | | || (_| | |   
+ * |_|  |_|  |_|  \___/|_|\_\_| |_|\__\__,_|_|   
+ * 
+*/

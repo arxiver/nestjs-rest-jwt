@@ -45,11 +45,12 @@ const geocoder = NodeGeocoder({
 
 // Infer the city and state from the latitude and longitude
 export async function inferCityAndState(latitude: number, longitude: number): Promise<{ city: string; state: string; country: string; }> {
-    const [result] = await geocoder.reverse({ lat: latitude, lon: longitude });
-    const { city, state, countryCode } = result;
-    return {
-        city: city || '',
-        state: state || '',
-        country: countryCode || ''
-    };
+    try {
+        const [result] = await geocoder.reverse({ lat: latitude, lon: longitude });
+        const { city, state, countryCode } = result;
+        return { city: city || '', state: state || '', country: countryCode || '' };
+    } catch (e) {
+        return { city: '', state: '', country: '' };
+    }
+
 }
